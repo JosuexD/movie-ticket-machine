@@ -1,0 +1,136 @@
+#include "stdafx.h"
+#include "stdio.h"
+#include <iostream>
+
+using namespace std;
+
+
+int main()
+{
+
+	//The variables
+		unsigned int TOTAL(0), C_TICKETS(0), A_TICKETS(0), S_TICKETS(0), a = 10, c = 5, s = 7; //c = children , a = adult, s = seniors
+	char choice = 'y';
+    int ticketsLeft(100);
+
+	cout << "\n\n\t\t*************MOVIE TICKET MACHINE**************" << endl;
+	
+	do {
+		cout << "Welcome Customer, we are offering Star Wars tickets today.\nHowever there is a limited amount of tickets avaliable. \nWe currently have: " << ticketsLeft << endl;
+		cout << "~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		cout << "Adults tickets are $10\nChildren tickets are $5\nSeniors tickets are $7\n";
+		cout << "~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+		{
+			cout << "How many adults tickets would you like to purchase today? ";
+			scanf_s("%d", &A_TICKETS);
+			//ticketsLeft = ticketsLeft - A_TICKETS;
+
+			_asm
+			{
+				MOV EAX, A_TICKETS;
+				MOV EBX, ticketsLeft;
+				SUB EBX, EAX;
+				MOV ticketsLeft, EBX;
+
+			}
+
+
+			cout << "How many children tickets would you like to purchase today? ";
+			scanf_s("%d", &C_TICKETS);
+			//ticketsLeft = ticketsLeft - C_TICKETS;
+
+			_asm
+			{
+				Mov EAX, C_TICKETS;
+				Mov Ebx, ticketsLeft;
+				sub ebx, eax;
+				mov ticketsLeft, ebx;
+			}
+
+			cout << "How many seniors tickets would you like to purchase today? ";
+			scanf_s("%d", &S_TICKETS);
+			//ticketsLeft = ticketsLeft - S_TICKETS;
+			cout << "\n\n\n\n\n\n" << endl;
+		}
+
+		_asm
+		{
+			Mov EAX, S_TICKETS;
+			Mov Ebx, ticketsLeft;
+			sub ebx, eax;
+			mov ticketsLeft, ebx;
+		}
+
+		_asm
+		{
+
+			MOV EAX, C_TICKETS;
+			MOV EBX, c; //PRICE OF TICKETS FOR CHILDREN
+			MUL EBX; //price multiply by tickets
+			MOVZX EBX, DX;
+			SAL EBX, 16; //shift all bit to the left.
+			MOVZX ECX, AX;
+			OR EBX, ECX;
+			mov C_TICKETS, EBX;
+			MOV TOTAL, EBX;
+
+
+			MOV EAX, A_TICKETS;
+			MOV EBX, a; //PRICE OF TICKETS FOR ADULTs
+			MUL EBX; //price multiply by tickets
+			MOVZX EBX, DX;
+			SAL EBX, 16;
+			MOVZX ECX, AX;
+			OR EBX, ECX;
+			mov A_TICKETS, EBX;
+			ADD TOTAL, EBX;
+
+
+			MOV EAX, S_TICKETS;
+			MOV EBX, s; //PRICE OF TICKETS FOR SENIORS
+			MUL EBX; //price multiply by tickets
+			MOVZX EBX, DX;
+			SAL EBX, 16;
+			MOVZX ECX, AX;
+			OR EBX, ECX;
+			MOV S_TICKETS, EBX;
+			ADD TOTAL, EBX; //total price of combine tickets
+
+
+
+		}
+
+		
+		if (ticketsLeft > 0)
+		{
+			cout << "--------------------CUSTOMER RECEIPT COPY--------------------\n";
+			printf("Adult tickets total cost:\t\t\t\t $%d\n", A_TICKETS);
+
+			printf("Children tickets total cost:\t\t\t\t $%d\n", C_TICKETS);
+
+			printf("Senior ticketst total cost:\t\t\t\t $%d\n", S_TICKETS);
+
+			cout << "-------------------------------------------------------------" << endl;
+			printf("TOTAL\t\t\t\t\t\t\t $%d\n", TOTAL);
+			cout << endl;
+			cout << "Would you like to purchase more movie tickets?(Y/N)";
+			cin >> choice;
+			cout << "tickets left: " << ticketsLeft << endl;
+			cout << "The total amount of tickets left is: " << ticketsLeft << endl;
+		}
+		else
+		{
+			printf("It seems we've ran out of tickets sorry :/\n");
+
+
+
+
+
+			system("pause"); //End the program
+		}
+		
+	}
+	while (ticketsLeft > 0 || choice == 'y' || choice == 'Y');
+	return 0;
+}
